@@ -3,161 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explota los Globos</title>
-    <link rel="stylesheet" href="css">
+    <script src="script.js"></script>
+    
+    <title>Arma el Rompecabezas</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
             background: url('112.gif') no-repeat center center fixed;
             background-size: cover;
-            cursor: none;
+            
         }
-        #start-button {
-            font-size: 50px;
-            padding: 320px 60px;
+        .start-button {
+            font-size: 30px;
+            padding: 15px 40px;
             cursor: pointer;
-            margin-top: 50px;
-            border: 5px solid white;
+            margin-top: 20px;
+            border: 3px solid white;
             color: white;
             background: transparent;
             text-transform: uppercase;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 10px;
             transition: 0.3s;
-            animation: neon-border 2s linear infinite;
         }
-        @keyframes neon-border {
-            0% {
-                box-shadow: 0 0 20px white inset, 0 0 40px cyan;
-            }
-            25% {
-                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 10px 0 50px blue;
-            }
-            50% {
-                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 10px 10px 50px green;
-            }
-            75% {
-                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 0px 10px 50px yellow;
-            }
-            100% {
-                box-shadow: 0 0 20px white inset, 0 0 40px cyan;
-            }
-        }
-        #start-button:hover {
-            transform: scale(1.2);
-        }
+        .start-button:hover { transform: scale(1.1); }
         
-        #game-container {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            height: 400px;
-            background: url('111.jpg') no-repeat center center;
-            background-size: cover;
-            border: 5px solid black;
+        .game-container {
             display: none;
             flex-direction: column;
-            justify-content: space-around;
             align-items: center;
-            margin: auto;
-            margin-top: 50px;
-            padding: 10px;
+            margin-top: 30px;
         }
-        .balloon-row {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            width: 100%;
-            flex-wrap: wrap;
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-template-rows: repeat(3, 120px);
+            gap: 2px;
+            width: 360px;
+            height: 360px;
+            border: 5px solid black;
         }
-        .balloon {
-            width: 40px;
-            height: 60px;
-            background-color: red;
-            border-radius: 50% / 60% 60% 40% 40%;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.2s;
-            animation: float 2s ease-in-out infinite alternate;
+        .puzzle-piece {
+            width: 120px;
+            height: 120px;
+            background-size: 360px 360px;
+            cursor: grab;
         }
-        .balloon:hover {
-            transform: scale(1.2);
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-10px); }
-        }
-        
-        .trail {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px white, 0 0 20px cyan;
-            pointer-events: none;
-            animation: fadeOut 0.5s linear;
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+        .image-container {
+            display: none;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1 style="color: white;">BUSQUE LA PROPUESTA🎈</h1>
-    <button id="start-button" onclick="startGame()">click</button>
-    <h2 id="score-display" style="display:none;">Puntos: <span id="score">0</span></h2>
-    <div id="game-container">
-        <div class="balloon-row" id="row1"></div>
-        <div class="balloon-row" id="row2"></div>
-        <div class="balloon-row" id="row3"></div>
+    <h1 style="color: white;">Arma el Rompecabezas 🧩</h1>
+    
+    <button class="start-button" onclick="startGame(1)">Iniciar Rompecabezas 1</button>
+    <div id="game-container-1" class="game-container">
+        <div class="puzzle-container" id="puzzle-container-1"></div>
     </div>
+    <div id="image-container-1" class="image-container">
+        <img src="imagen1_final.png" alt="Imagen Final 1" width="400">
+        <button class="start-button" onclick="startGame(2)">Siguiente Rompecabezas</button>
+    </div>
+
+    <div id="game-container-2" class="game-container">
+        <div class="puzzle-container" id="puzzle-container-2"></div>
+    </div>
+    <div id="image-container-2" class="image-container">
+        <img src="imagen2_final.png" alt="Imagen Final 2" width="400">
+        <button class="start-button" onclick="startGame(3)">Siguiente Rompecabezas</button>
+    </div>
+
+    <div id="game-container-3" class="game-container">
+        <div class="puzzle-container" id="puzzle-container-3"></div>
+    </div>
+    <div id="image-container-3" class="image-container">
+        <img src="imagen3_final.png" alt="Imagen Final 3" width="400">
+    </div>
+    
     <script>
-        let score = 0;
-        function getRandomColor() {
-            const colors = ['red', 'blue', 'yellow', 'green', 'purple', 'orange', 'pink'];
-            return colors[Math.floor(Math.random() * colors.length)];
+        function startGame(gameNumber) {
+            document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
+            document.getElementById(`game-container-${gameNumber}`).style.display = 'flex';
+            generatePuzzle(gameNumber);
         }
-        function createBalloon(rowId) {
-            const balloon = document.createElement('div');
-            balloon.classList.add('balloon');
-            balloon.style.backgroundColor = getRandomColor();
-            document.getElementById(rowId).appendChild(balloon);
-            
-            balloon.addEventListener('click', () => {
-                score++;
-                document.getElementById('score').textContent = score;
-                balloon.remove();
+
+        function generatePuzzle(gameNumber) {
+            const container = document.getElementById(`puzzle-container-${gameNumber}`);
+            container.innerHTML = '';
+            const positions = [...Array(9).keys()].sort(() => Math.random() - 0.5);
+            positions.forEach((pos, index) => {
+                const piece = document.createElement('div');
+                piece.classList.add('puzzle-piece');
+                piece.style.backgroundImage = `url('imagen${gameNumber}_completa.jpg')`;
+                piece.style.backgroundPosition = `${-(pos % 3) * 120}px ${-Math.floor(pos / 3) * 120}px`;
+                piece.draggable = true;
+                piece.dataset.index = index;
+                piece.dataset.correct = pos;
+                piece.addEventListener('dragstart', dragStart);
+                piece.addEventListener('dragover', dragOver);
+                piece.addEventListener('drop', drop);
+                container.appendChild(piece);
             });
         }
+
+        function dragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.dataset.index);
+        }
         
-        function populateRows() {
-            for (let i = 0; i < 5; i++) {
-                createBalloon('row1');
-                createBalloon('row2');
-                createBalloon('row3');
+        function dragOver(event) {
+            event.preventDefault();
+        }
+        
+        function drop(event) {
+            event.preventDefault();
+            let draggedIndex = event.dataTransfer.getData('text/plain');
+            let targetIndex = event.target.dataset.index;
+            let container = event.target.parentNode;
+            let pieces = [...container.children];
+            
+            [pieces[draggedIndex].dataset.index, pieces[targetIndex].dataset.index] = 
+            [pieces[targetIndex].dataset.index, pieces[draggedIndex].dataset.index];
+            
+            container.innerHTML = '';
+            pieces.sort((a, b) => a.dataset.index - b.dataset.index).forEach(piece => container.appendChild(piece));
+            
+            checkWin(container.id);
+        }
+        
+        function checkWin(containerId) {
+            let isSolved = [...document.querySelectorAll(`#${containerId} .puzzle-piece`)].every(
+                (piece, index) => piece.dataset.correct == index
+            );
+            if (isSolved) {
+                document.getElementById(containerId.replace('puzzle-container', 'game-container')).style.display = 'none';
+                document.getElementById(containerId.replace('puzzle-container', 'image-container')).style.display = 'block';
             }
         }
-        
-        function startGame() {
-            document.getElementById('start-button').style.display = 'none';
-            document.getElementById('game-container').style.display = 'flex';
-            document.getElementById('score-display').style.display = 'block';
-            populateRows();
-        }
-        
-        document.addEventListener('mousemove', (e) => {
-            const trail = document.createElement('div');
-            trail.classList.add('trail');
-            document.body.appendChild(trail);
-            trail.style.left = `${e.pageX}px`;
-            trail.style.top = `${e.pageY}px`;
-            setTimeout(() => {
-                trail.remove();
-            }, 500);
-        });
     </script>
+    
 </body>
 </html>
