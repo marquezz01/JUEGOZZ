@@ -9,21 +9,51 @@
         body {
             text-align: center;
             font-family: Arial, sans-serif;
-            background: url('112.jpg') no-repeat center center fixed;
+            background: url('112.gif') no-repeat center center fixed;
             background-size: cover;
+            cursor: none;
         }
         #start-button {
-            font-size: 20px;
-            padding: 10px 20px;
+            font-size: 50px;
+            padding: 320px 60px;
             cursor: pointer;
             margin-top: 50px;
+            border: 5px solid white;
+            color: white;
+            background: transparent;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 20px;
+            transition: 0.3s;
+            animation: neon-border 2s linear infinite;
         }
+        @keyframes neon-border {
+            0% {
+                box-shadow: 0 0 20px white inset, 0 0 40px cyan;
+            }
+            25% {
+                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 10px 0 50px blue;
+            }
+            50% {
+                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 10px 10px 50px green;
+            }
+            75% {
+                box-shadow: 0 0 20px white inset, 0 0 40px cyan, 0px 10px 50px yellow;
+            }
+            100% {
+                box-shadow: 0 0 20px white inset, 0 0 40px cyan;
+            }
+        }
+        #start-button:hover {
+            transform: scale(1.2);
+        }
+        
         #game-container {
             position: relative;
             width: 90%;
             max-width: 500px;
             height: 400px;
-            background: url('113.jpg') no-repeat center center;
+            background: url('111.jpg') no-repeat center center;
             background-size: cover;
             border: 5px solid black;
             display: none;
@@ -45,22 +75,11 @@
             width: 40px;
             height: 60px;
             background-color: red;
-            border-radius: 50% / 60% 60% 40% 40%; /* Forma más realista */
+            border-radius: 50% / 60% 60% 40% 40%;
             cursor: pointer;
             position: relative;
             transition: transform 0.2s;
             animation: float 2s ease-in-out infinite alternate;
-        }
-        .balloon::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 10px;
-            height: 15px;
-            background: inherit;
-            border-radius: 50%;
-            transform: translateX(-50%);
         }
         .balloon:hover {
             transform: scale(1.2);
@@ -69,41 +88,31 @@
             0% { transform: translateY(0px); }
             100% { transform: translateY(-10px); }
         }
-        #video-container {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        
+        .trail {
+            position: absolute;
+            width: 10px;
+            height: 10px;
             background: white;
-            padding: 10px;
-            border-radius: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white, 0 0 20px cyan;
+            pointer-events: none;
+            animation: fadeOut 0.5s linear;
         }
-        #video-container iframe {
-            width: 100%;
-            max-width: 560px;
-            height: 315px;
-        }
-        @media (max-width: 600px) {
-            .balloon {
-                width: 30px;
-                height: 50px;
-            }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <h1>BUSQUE LA PROPUESTA🎈</h1>
+    <h1 style="color: white;">BUSQUE LA PROPUESTA🎈</h1>
     <button id="start-button" onclick="startGame()">IniciE</button>
     <h2 id="score-display" style="display:none;">Puntos: <span id="score">0</span></h2>
     <div id="game-container">
         <div class="balloon-row" id="row1"></div>
         <div class="balloon-row" id="row2"></div>
         <div class="balloon-row" id="row3"></div>
-    </div>
-    <div id="video-container">
-        <iframe id="youtube-video" src="" frameborder="0" allowfullscreen></iframe>
-        <button onclick="closeVideo()">Cerrar</button>
     </div>
     <script>
         let score = 0;
@@ -121,20 +130,7 @@
                 score++;
                 document.getElementById('score').textContent = score;
                 balloon.remove();
-                if (Math.random() < 0.3) {
-                    showVideo('https://www.youtube.com/embed/dQw4w9WgXcQ');
-                }
             });
-        }
-        
-        function showVideo(url) {
-            document.getElementById('youtube-video').src = url;
-            document.getElementById('video-container').style.display = 'block';
-        }
-        
-        function closeVideo() {
-            document.getElementById('video-container').style.display = 'none';
-            document.getElementById('youtube-video').src = '';
         }
         
         function populateRows() {
@@ -151,6 +147,17 @@
             document.getElementById('score-display').style.display = 'block';
             populateRows();
         }
+        
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.classList.add('trail');
+            document.body.appendChild(trail);
+            trail.style.left = `${e.pageX}px`;
+            trail.style.top = `${e.pageY}px`;
+            setTimeout(() => {
+                trail.remove();
+            }, 500);
+        });
     </script>
 </body>
 </html>
